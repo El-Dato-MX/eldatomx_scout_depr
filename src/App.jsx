@@ -1,15 +1,15 @@
-// src/App.jsx
 import React from 'react';
-import HexBinPlot from './HexBinPlot';
+import HexBinPlot from './components/HexBinPlotTwo';
+import './App.css';
 
-const App = () => {
+function App() {
   return (
-    <div>
-      <h1>Hexbin Plot with D3.js</h1>
+    <div className="App">
+      <h1>NBA Shot Chart HexBin Plot</h1>
       <HexBinPlot />
     </div>
   );
-};
+}
 
 export default App;
 
