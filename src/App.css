@@ -40,3 +40,20 @@
 .read-the-docs {
   color: #888;
 }
+.App {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+.logos {
+  display: flex;
+  flex-direction: column;
+}
+
+.plot {
+  flex-grow: 1;
+  margin-left: 20px;
+}
+
