@@ -8,7 +8,7 @@ const HexBinPlot = () => {
 
   useEffect(() => {
     // Fetch the CSV file
-    d3.csv('src/assets/shotchartd.csv').then(loadedData => {
+    d3.csv('assets/shotchartd.csv').then(loadedData => {
       console.log('Loaded Data:', loadedData); // Debugging line
       const shotData = loadedData.map(d => ({
         locX: +d.LOC_X,
