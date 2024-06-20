@@ -1,7 +1,7 @@
 import React from 'react';
 import PlayerAndTeamLogo from './components/PlayerAndTeamLogo';
 import './App.css';
-import HexbinPlot from './components/HexbinPlot';
+import HexBinPlot from './components/HexBinPlot';
 
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
       <div className="logos">
         <PlayerAndTeamLogo playerId="1626174" teamId="1610612747" />
       </div>
-    <HexbinPlot />
+    <HexBinPlot />
     </div>
   );
 }

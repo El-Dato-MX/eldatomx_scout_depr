@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { hexbin as d3Hexbin } from 'd3-hexbin';
 
-const HexbinPlot = () => {
+const HexBinPlot = () => {
   const svgRef = useRef();
   const [data, setData] = useState([]);
 
@@ -70,5 +70,5 @@ const HexbinPlot = () => {
   return <svg ref={svgRef}></svg>;
 };
 
-export default HexbinPlot;
+export default HexBinPlot;
 
