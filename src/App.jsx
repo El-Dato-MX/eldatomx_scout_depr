@@ -1,20 +1,25 @@
 import React from 'react';
-import PlayerAndTeamLogo from './components/PlayerAndTeamLogo';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { ThemeProvider, CssBaseline } from '@mui/material';
+import PaginatedTable from './components/PaginatedTable';
+import PlayerDetail from './components/PlayerDetail';
+import { darkTheme } from './darkTheme';
 import './App.css';
-import HexBinPlot from './components/HexBinPlot';
-
 
 function App() {
   return (
-    <div className="App">
-   {/* <h1>NBA Shot Chart HexBin Plot</h1> */}
-      <div className="logos">
-        <PlayerAndTeamLogo playerId="1626174" teamId="1610612747" />
-      </div>
-    <HexBinPlot />
-    </div>
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+      <Router>
+        <div className="App">
+          <Routes>
+            <Route path="/" element={<PaginatedTable />} />
+            <Route path="/player/:id" element={<PlayerDetail />} />
+          </Routes>
+        </div>
+      </Router>
+    </ThemeProvider>
   );
 }
 
 export default App;
-
