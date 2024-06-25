@@ -25,7 +25,7 @@ const PaginatedTable = () => {
     const fetchPlayers = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://24.199.122.83/nba/players');
+        const response = await fetch('https://eldatomxapi.silverboi.me/nba/players');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

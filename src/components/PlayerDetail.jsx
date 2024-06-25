@@ -15,8 +15,8 @@ const PlayerDetail = () => {
       try {
         setLoading(true);
         const [playerResponse, shotChartResponse] = await Promise.all([
-          fetch(`http://24.199.122.83/nba/players/id/${id}`),
-          fetch(`http://24.199.122.83/nba/player_shotchart/id/${id}`)
+          fetch(`https://eldatomxapi.silverboi.me/nba/players/id/${id}`),
+          fetch(`https://eldatomxapi.silverboi.me/nba/player_shotchart/id/${id}`)
         ]);
 
         if (!playerResponse.ok || !shotChartResponse.ok) {
