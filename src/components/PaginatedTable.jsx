@@ -9,7 +9,6 @@ import {
   TablePagination,
   TableRow,
   Paper,
-  Avatar,
   CircularProgress,
   Typography,
 } from '@mui/material';
@@ -25,7 +24,7 @@ const PaginatedTable = () => {
     const fetchPlayers = async () => {
       try {
         setLoading(true);
-        const response = await fetch('https://eldatomxapi.silverboi.me/nba/players');
+        const response = await fetch('https://eldatomxapi.silverboi.me/nba/player_team');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -51,7 +50,7 @@ const PaginatedTable = () => {
     setPage(0);
   };
 
-  const playerImageUrl = (playerId) => `https://cdn.nba.com/headshots/nba/latest/1040x760/${playerId}.png`;
+  const teamLogoUrl = (teamId) => `https://cdn.nba.com/logos/nba/${teamId}/global/D/logo.svg`;
 
   if (loading) {
     return <CircularProgress />;
@@ -67,8 +66,8 @@ const PaginatedTable = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Headshot</TableCell>
               <TableCell>Name</TableCell>
+              <TableCell>Team</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -77,15 +76,12 @@ const PaginatedTable = () => {
               .map((player) => (
                 <TableRow key={player.PLAYER_ID}>
                   <TableCell>
-                    <Avatar
-                      src={playerImageUrl(player.PLAYER_ID)}
-                      alt={`${player.PLAYER_FIRST_NAME} ${player.PLAYER_LAST_NAME}`}
-                    />
+                    <Link to={`/player/${player.PLAYER_ID}`}>
+                      {player.PLAYER_NAME}
+                    </Link>
                   </TableCell>
                   <TableCell>
-                    <Link to={`/player/${player.PLAYER_ID}`}>
-                      {`${player.PLAYER_FIRST_NAME} ${player.PLAYER_LAST_NAME}`}
-                    </Link>
+                    <img src={teamLogoUrl(player.TEAM_ID)} alt="Team Logo" style={{ height: 40 }} />
                   </TableCell>
                 </TableRow>
               ))}

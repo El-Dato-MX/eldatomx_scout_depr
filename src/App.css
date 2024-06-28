@@ -1,0 +1,27 @@
+/* App.css */
+
+/* General responsive styling */
+@media (max-width: 414px) { /* iPhone 14 Pro max width */
+  .MuiTableCell-root {
+    padding: 8px;
+  }
+
+  .MuiTableCell-head {
+    font-size: 0.875rem;
+  }
+
+  .MuiTableCell-body {
+    font-size: 0.75rem;
+  }
+
+  .MuiTablePagination-root {
+    .MuiInputBase-root {
+      font-size: 0.75rem;
+    }
+
+    .MuiTablePagination-toolbar {
+      padding: 0 8px;
+    }
+  }
+}
+
