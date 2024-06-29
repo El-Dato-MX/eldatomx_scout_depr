@@ -1,164 +1,85 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Typography, Avatar, CircularProgress, Paper, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import HexBinPlot from './HexBinPlot';
+import { Box, Typography, Grid, CircularProgress } from '@mui/material';
+import TeamSeasonGames from './TeamSeasonGames';
 
 const PlayerDetail = () => {
   const { id } = useParams();
-  const [player, setPlayer] = useState(null);
-  const [shotChartData, setShotChartData] = useState([]);
+  const [playerData, setPlayerData] = useState(null);
+  const [selectedGameId, setSelectedGameId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchPlayerDetails = async () => {
+    const fetchPlayerData = async () => {
       try {
         setLoading(true);
-        const [playerResponse, shotChartResponse] = await Promise.all([
-          fetch(`https://eldatomxapi.silverboi.me/nba/players/id/${id}`),
-          fetch(`https://eldatomxapi.silverboi.me/nba/player_shotchart/id/${id}`)
-        ]);
-
-        if (!playerResponse.ok || !shotChartResponse.ok) {
-          throw new Error(`HTTP error! status: ${playerResponse.status} ${shotChartResponse.status}`);
+        const response = await fetch(`https://eldatomxapi.silverboi.me/nba/player_game_data/${id}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-
-        const [playerData, shotChartData] = await Promise.all([
-          playerResponse.json(),
-          shotChartResponse.json()
-        ]);
-
-        setPlayer(playerData);
-        setShotChartData(shotChartData);
+        const data = await response.json();
+        setPlayerData(data);
+        if (data.games.length > 0) {
+          setSelectedGameId(data.games[0].GAME_ID);
+        }
       } catch (error) {
-        console.error('Error fetching player details:', error);
+        console.error('Error fetching player data:', error);
         setError(error.message);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPlayerDetails();
+    fetchPlayerData();
   }, [id]);
 
   const playerImageUrl = (playerId) => `https://cdn.nba.com/headshots/nba/latest/1040x760/${playerId}.png`;
   const teamLogoUrl = (teamId) => `https://cdn.nba.com/logos/nba/${teamId}/global/D/logo.svg`;
 
-  if (loading) {
-    return <CircularProgress />;
-  }
+  const handleGameSelect = (gameId) => {
+    setSelectedGameId(gameId);
+  };
 
-  if (error) {
-    return <Typography color="error">Error: {error}</Typography>;
-  }
-
-  if (!player) {
-    return <Typography>No player data found</Typography>;
-  }
+  if (loading) return <CircularProgress />;
+  if (error) return <Typography color="error">Error: {error}</Typography>;
+  if (!playerData) return <Typography>No player data found</Typography>;
 
   return (
-    <Paper sx={{ p: 2 }}>
-      <Grid container spacing={2}>
-        {/* Leftmost third */}
-        <Grid item xs={12} md={4} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <div style={{ position: 'relative', width: '100%' }}>
-            <Avatar
-              src={playerImageUrl(player.PLAYER_ID)}
-              alt={`${player.PLAYER_FIRST_NAME} ${player.PLAYER_LAST_NAME}`}
-              sx={{ width: '100%', height: 'auto', mb: 2 }}
+    <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <Grid container sx={{ height: '50%' }}>
+        <Grid item xs={2.4} sx={{ p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Box sx={{ position: 'relative', width: '100%', paddingTop: '100%', mb: 1 }}>
+            <img
+              src={playerImageUrl(playerData.player_info.PLAYER_ID)}
+              alt={playerData.player_info.PLAYER_NAME}
+              style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
             />
             <img
-              src={teamLogoUrl(player.TEAM_ID)}
-              alt={player.TEAM_NAME}
-              style={{ position: 'absolute', top: '10px', right: '10px', width: '50px', height: '50px' }}
+              src={teamLogoUrl(playerData.player_info.TEAM_ID)}
+              alt={playerData.player_info.TEAM_NICKNAME}
+              style={{
+                position: 'absolute',
+                top: 5,
+                right: 5,
+                width: '30%',
+                height: '30%',
+              }}
             />
-          </div>
-          <Typography variant="h6">Season Games</Typography>
-          <div style={{ height: '200px', background: '#f0f0f0', width: '100%' }}>Placeholder for season games</div>
+          </Box>
+          <Typography variant="h6" noWrap>{playerData.player_info.PLAYER_NAME}</Typography>
         </Grid>
-
-        {/* Center and rightmost third */}
-        <Grid item xs={12} md={8} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <Typography variant="h6">Shot Chart</Typography>
-          <div style={{ width: '100%', height: '100%' }}>
-            <HexBinPlot data={shotChartData} />
-          </div>
-        </Grid>
-
-        {/* Bottom half for game stats */}
-        <Grid item xs={12}>
-          <Typography variant="h6">Game Stats</Typography>
-          <TableContainer component={Paper}>
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell>SEASON_ID</TableCell>
-                  <TableCell>Player_ID</TableCell>
-                  <TableCell>Game_ID</TableCell>
-                  <TableCell>GAME_DATE</TableCell>
-                  <TableCell>MATCHUP</TableCell>
-                  <TableCell>WL</TableCell>
-                  <TableCell>MIN</TableCell>
-                  <TableCell>FGM</TableCell>
-                  <TableCell>FGA</TableCell>
-                  <TableCell>FG_PCT</TableCell>
-                  <TableCell>FG3M</TableCell>
-                  <TableCell>FG3A</TableCell>
-                  <TableCell>FG3_PCT</TableCell>
-                  <TableCell>FTM</TableCell>
-                  <TableCell>FTA</TableCell>
-                  <TableCell>FT_PCT</TableCell>
-                  <TableCell>OREB</TableCell>
-                  <TableCell>DREB</TableCell>
-                  <TableCell>REB</TableCell>
-                  <TableCell>AST</TableCell>
-                  <TableCell>STL</TableCell>
-                  <TableCell>BLK</TableCell>
-                  <TableCell>TOV</TableCell>
-                  <TableCell>PF</TableCell>
-                  <TableCell>PTS</TableCell>
-                  <TableCell>PLUS_MINUS</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {Array.isArray(player.stats) && player.stats.map((stat, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{stat.SEASON_ID}</TableCell>
-                    <TableCell>{stat.Player_ID}</TableCell>
-                    <TableCell>{stat.Game_ID}</TableCell>
-                    <TableCell>{stat.GAME_DATE}</TableCell>
-                    <TableCell>{stat.MATCHUP}</TableCell>
-                    <TableCell>{stat.WL}</TableCell>
-                    <TableCell>{stat.MIN}</TableCell>
-                    <TableCell>{stat.FGM}</TableCell>
-                    <TableCell>{stat.FGA}</TableCell>
-                    <TableCell>{stat.FG_PCT}</TableCell>
-                    <TableCell>{stat.FG3M}</TableCell>
-                    <TableCell>{stat.FG3A}</TableCell>
-                    <TableCell>{stat.FG3_PCT}</TableCell>
-                    <TableCell>{stat.FTM}</TableCell>
-                    <TableCell>{stat.FTA}</TableCell>
-                    <TableCell>{stat.FT_PCT}</TableCell>
-                    <TableCell>{stat.OREB}</TableCell>
-                    <TableCell>{stat.DREB}</TableCell>
-                    <TableCell>{stat.REB}</TableCell>
-                    <TableCell>{stat.AST}</TableCell>
-                    <TableCell>{stat.STL}</TableCell>
-                    <TableCell>{stat.BLK}</TableCell>
-                    <TableCell>{stat.TOV}</TableCell>
-                    <TableCell>{stat.PF}</TableCell>
-                    <TableCell>{stat.PTS}</TableCell>
-                    <TableCell>{stat.PLUS_MINUS}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+        <Grid item xs={9.6}>
+          <TeamSeasonGames 
+            games={playerData.games}
+            selectedGameId={selectedGameId}
+            onGameSelect={handleGameSelect}
+          />
         </Grid>
       </Grid>
-    </Paper>
+      {/* Lower half of the screen is intentionally left empty */}
+    </Box>
   );
 };
 
 export default PlayerDetail;
-
