@@ -10,9 +10,9 @@ const GameCard = ({ game, isSelected, onSelect }) => {
   return (
     <Card 
       sx={{ 
-        width: 80,
-        height: 80,
-        m: 0.5,
+        width: 50,  // Further reduced from 60
+        height: 50, // Further reduced from 60
+        m: 0.1,     // Further reduced from 0.25
         backgroundImage: `url(${teamLogoUrl(game.OPPONENT_TEAM_ID)})`,
         backgroundSize: 'contain',
         backgroundPosition: 'center',
@@ -36,11 +36,11 @@ const GameCard = ({ game, isSelected, onSelect }) => {
           backgroundColor: 'rgba(255, 255, 255, 0.7)',
         }}
       />
-      <CardContent sx={{ position: 'relative', zIndex: 1, p: 1 }}>
-        <Typography variant="body2" color={game.WL === 'W' ? 'success.main' : 'error.main'} fontWeight="bold">
+      <CardContent sx={{ position: 'relative', zIndex: 1, p: 0.25 }}>
+        <Typography variant="caption" color={game.WL === 'W' ? 'success.main' : 'error.main'} fontWeight="bold" fontSize="0.6rem">
           {game.WL}
         </Typography>
-        <Typography variant="caption" color='#000'>
+        <Typography variant="caption" color='#000' fontSize="0.6rem">
           {homeAwayText}
         </Typography>
       </CardContent>
@@ -49,19 +49,42 @@ const GameCard = ({ game, isSelected, onSelect }) => {
 };
 
 const TeamSeasonGames = ({ games, selectedGameId, onGameSelect }) => {
+  // Group games into rows of 10
+  const rows = [];
+  for (let i = 0; i < games.length; i += 10) {
+    rows.push(games.slice(i, i + 10));
+  }
+
   return (
     <Box sx={{ height: '100%', overflow: 'auto' }}>
-      <Grid container spacing={1} justifyContent="flex-start">
-        {games.map((game) => (
-          <Grid item key={game.GAME_ID}>
-            <GameCard 
-              game={game} 
-              isSelected={game.GAME_ID === selectedGameId}
-              onSelect={onGameSelect}
-            />
+      {rows.map((row, rowIndex) => (
+        <React.Fragment key={rowIndex}>
+          <Grid container spacing={0.25} justifyContent="flex-start" wrap="nowrap">
+            {row.map((game) => (
+              <Grid item key={game.GAME_ID}>
+                <GameCard 
+                  game={game} 
+                  isSelected={game.GAME_ID === selectedGameId}
+                  onSelect={onGameSelect}
+                />
+              </Grid>
+            ))}
           </Grid>
-        ))}
-      </Grid>
+          {row.some(game => game.GAME_ID === selectedGameId) && (
+            <Box 
+              sx={{ 
+                height: '50vh',
+                bgcolor: 'black',
+                width: '100%',
+                mt: 0.25,
+                mb: 0.25,
+              }}
+            >
+              {/* Game info will be added here */}
+            </Box>
+          )}
+        </React.Fragment>
+      ))}
     </Box>
   );
 };

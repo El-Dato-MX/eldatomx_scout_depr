@@ -38,7 +38,7 @@ const PlayerDetail = () => {
   const teamLogoUrl = (teamId) => `https://cdn.nba.com/logos/nba/${teamId}/global/D/logo.svg`;
 
   const handleGameSelect = (gameId) => {
-    setSelectedGameId(gameId);
+    setSelectedGameId(prevId => prevId === gameId ? null : gameId);
   };
 
   if (loading) return <CircularProgress />;
@@ -77,7 +77,6 @@ const PlayerDetail = () => {
           />
         </Grid>
       </Grid>
-      {/* Lower half of the screen is intentionally left empty */}
     </Box>
   );
 };
