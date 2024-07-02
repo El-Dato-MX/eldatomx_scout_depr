@@ -10,9 +10,9 @@ const GameCard = ({ game, isSelected, onSelect }) => {
   return (
     <Card 
       sx={{ 
-        width: 50,  // Further reduced from 60
-        height: 50, // Further reduced from 60
-        m: 0.1,     // Further reduced from 0.25
+        width: 50,
+        height: 50,
+        m: 0.1,
         backgroundImage: `url(${teamLogoUrl(game.OPPONENT_TEAM_ID)})`,
         backgroundSize: 'contain',
         backgroundPosition: 'center',
@@ -78,9 +78,14 @@ const TeamSeasonGames = ({ games, selectedGameId, onGameSelect }) => {
                 width: '100%',
                 mt: 0.25,
                 mb: 0.25,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
               }}
             >
-              {/* Game info will be added here */}
+              <Typography color="white" variant="h4">
+                Selected Game ID: {selectedGameId}
+              </Typography>
             </Box>
           )}
         </React.Fragment>
