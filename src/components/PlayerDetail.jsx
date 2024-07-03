@@ -74,6 +74,7 @@ const PlayerDetail = () => {
             games={playerData.games}
             selectedGameId={selectedGameId}
             onGameSelect={handleGameSelect}
+            playerId={id}
           />
         </Grid>
       </Grid>

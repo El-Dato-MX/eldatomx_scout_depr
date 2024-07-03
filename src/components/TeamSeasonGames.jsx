@@ -48,7 +48,7 @@ const GameCard = ({ game, isSelected, onSelect }) => {
   );
 };
 
-const TeamSeasonGames = ({ games, selectedGameId, onGameSelect }) => {
+const TeamSeasonGames = ({ games, selectedGameId, onGameSelect, playerId }) => {
   // Group games into rows of 10
   const rows = [];
   for (let i = 0; i < games.length; i += 10) {
@@ -79,12 +79,16 @@ const TeamSeasonGames = ({ games, selectedGameId, onGameSelect }) => {
                 mt: 0.25,
                 mb: 0.25,
                 display: 'flex',
+                flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
               }}
             >
               <Typography color="white" variant="h4">
                 Selected Game ID: {selectedGameId}
+              </Typography>
+              <Typography color="white" variant="h5" mt={2}>
+                Player ID: {playerId}
               </Typography>
             </Box>
           )}
