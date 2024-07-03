@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Card, CardContent, Typography, Grid } from '@mui/material';
+import HexBinPlot from './HexBinPlot';
 
 const GameCard = ({ game, isSelected, onSelect }) => {
   const teamLogoUrl = (teamId) => `https://cdn.nba.com/logos/nba/${teamId}/global/L/logo.svg`;
@@ -48,8 +49,7 @@ const GameCard = ({ game, isSelected, onSelect }) => {
   );
 };
 
-const TeamSeasonGames = ({ games, selectedGameId, onGameSelect, playerId }) => {
-  // Group games into rows of 10
+const TeamSeasonGames = ({ games, selectedGameId, onGameSelect, playerId, shotchartData, gameLogData }) => {
   const rows = [];
   for (let i = 0; i < games.length; i += 10) {
     rows.push(games.slice(i, i + 10));
@@ -70,7 +70,7 @@ const TeamSeasonGames = ({ games, selectedGameId, onGameSelect, playerId }) => {
               </Grid>
             ))}
           </Grid>
-          {row.some(game => game.GAME_ID === selectedGameId) && (
+          {row.some(game => game.GAME_ID === selectedGameId) && shotchartData && gameLogData && (
             <Box 
               sx={{ 
                 height: '50vh',
@@ -79,17 +79,32 @@ const TeamSeasonGames = ({ games, selectedGameId, onGameSelect, playerId }) => {
                 mt: 0.25,
                 mb: 0.25,
                 display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
                 alignItems: 'center',
+                p: 2,
               }}
             >
-              <Typography color="white" variant="h4">
-                Selected Game ID: {selectedGameId}
-              </Typography>
-              <Typography color="white" variant="h5" mt={2}>
-                Player ID: {playerId}
-              </Typography>
+              <Box sx={{ width: '50%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Box sx={{ width: '90%', height: '90%', position: 'relative' }}>
+                  <HexBinPlot data={shotchartData} />
+                </Box>
+              </Box>
+              <Box sx={{ width: '45%', height: '100%', color: 'white', overflowY: 'auto' }}>
+                <Typography variant="h6">Game Log</Typography>
+                <Typography>Date: {new Date(gameLogData.GAME_DATE).toLocaleDateString()}</Typography>
+                <Typography>Matchup: {gameLogData.MATCHUP}</Typography>
+                <Typography>Result: {gameLogData.WL}</Typography>
+                <Typography>Minutes: {gameLogData.MIN}</Typography>
+                <Typography>Points: {gameLogData.PTS}</Typography>
+                <Typography>Rebounds: {gameLogData.REB}</Typography>
+                <Typography>Assists: {gameLogData.AST}</Typography>
+                <Typography>Steals: {gameLogData.STL}</Typography>
+                <Typography>Blocks: {gameLogData.BLK}</Typography>
+                <Typography>FG: {gameLogData.FGM}/{gameLogData.FGA} ({(gameLogData.FG_PCT * 100).toFixed(1)}%)</Typography>
+                <Typography>3PT: {gameLogData.FG3M}/{gameLogData.FG3A} ({(gameLogData.FG3_PCT * 100).toFixed(1)}%)</Typography>
+                <Typography>FT: {gameLogData.FTM}/{gameLogData.FTA} ({(gameLogData.FT_PCT * 100).toFixed(1)}%)</Typography>
+              </Box>
             </Box>
           )}
         </React.Fragment>

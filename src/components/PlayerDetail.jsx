@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Box, Typography, Grid, CircularProgress } from '@mui/material';
 import TeamSeasonGames from './TeamSeasonGames';
+import HexBinPlot from './HexBinPlot';
 
 const PlayerDetail = () => {
   const { id } = useParams();
   const [playerData, setPlayerData] = useState(null);
   const [selectedGameId, setSelectedGameId] = useState(null);
+  const [shotchartData, setShotchartData] = useState(null);
+  const [gameLogData, setGameLogData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -33,6 +36,37 @@ const PlayerDetail = () => {
 
     fetchPlayerData();
   }, [id]);
+
+  useEffect(() => {
+    const fetchGameData = async () => {
+      if (selectedGameId) {
+        try {
+          setLoading(true);
+          const [shotchartResponse, gameLogResponse] = await Promise.all([
+            fetch(`https://eldatomxapi.silverboi.me/nba/shotchart/${id}/${selectedGameId}`),
+            fetch(`https://eldatomxapi.silverboi.me/nba/player_game_log/${id}/${selectedGameId}`)
+          ]);
+
+          if (!shotchartResponse.ok || !gameLogResponse.ok) {
+            throw new Error(`HTTP error! status: ${shotchartResponse.status} ${gameLogResponse.status}`);
+          }
+
+          const shotchartData = await shotchartResponse.json();
+          const gameLogData = await gameLogResponse.json();
+
+          setShotchartData(shotchartData);
+          setGameLogData(gameLogData);
+        } catch (error) {
+          console.error('Error fetching game data:', error);
+          setError(error.message);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchGameData();
+  }, [id, selectedGameId]);
 
   const playerImageUrl = (playerId) => `https://cdn.nba.com/headshots/nba/latest/1040x760/${playerId}.png`;
   const teamLogoUrl = (teamId) => `https://cdn.nba.com/logos/nba/${teamId}/global/D/logo.svg`;
@@ -75,6 +109,8 @@ const PlayerDetail = () => {
             selectedGameId={selectedGameId}
             onGameSelect={handleGameSelect}
             playerId={id}
+            shotchartData={shotchartData}
+            gameLogData={gameLogData}
           />
         </Grid>
       </Grid>

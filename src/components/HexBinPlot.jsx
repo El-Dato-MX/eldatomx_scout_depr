@@ -12,17 +12,17 @@ const HexBinPlot = ({ data }) => {
       return;
     }
 
-    const margin = { top: 20, right: 20, bottom: 30, left: 40 };
-    const width = 500 - margin.left - margin.right;
-    const height = 470 - margin.top - margin.bottom;
+    const svgElement = d3.select(svgRef.current);
+    svgElement.selectAll("*").remove();
 
-    d3.select(svgRef.current).selectAll("*").remove();
+    const width = svgElement.node().getBoundingClientRect().width;
+    const height = svgElement.node().getBoundingClientRect().height;
 
-    const svg = d3.select(svgRef.current)
-      .attr('width', width + margin.left + margin.right)
-      .attr('height', height + margin.top + margin.bottom)
-      .append('g')
-      .attr('transform', `translate(${margin.left},${margin.top})`);
+    const svg = svgElement
+      .attr('width', '100%')
+      .attr('height', '100%')
+      .attr('viewBox', `0 0 ${width} ${height}`)
+      .append('g');
 
     const x = d3.scaleLinear()
       .domain([-250, 250])
@@ -54,11 +54,11 @@ const HexBinPlot = ({ data }) => {
       .attr('stroke', '#000')
       .attr('stroke-width', '0.1');
 
-    // ... (rest of the code remains the same)
+    // Add court outline or any other necessary elements here
 
   }, [data]);
 
-  return <svg ref={svgRef}></svg>;
+  return <svg ref={svgRef} style={{ width: '100%', height: '100%' }}></svg>;
 };
 
 export default HexBinPlot;
